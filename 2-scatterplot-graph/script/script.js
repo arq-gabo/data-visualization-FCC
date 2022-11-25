@@ -16,16 +16,17 @@ async function renderData() {
   //parsed api data for used in create graph
   let data = await getData();
 
+  console.log(data);
   // Create svg using d3.js library
 
   // Initial values
   const margin = 50;
-  const w = data.length * 20 + margin * 2; //800px
+  const w = data.length * 21 + margin * 2; //800px
   const h = 550;
-  const graphW = w - margin * 2;
-  const graphH = h - margin * 2;
-  const minYear = d3.min(data.map((val) => val.Year)) - 1;
-  const maxYear = d3.max(data.map((val) => val.Year)) + 1;
+  const graphW = w - margin * 2; // 735
+  const graphH = h - margin * 2; // 450
+  const minYear = d3.min(data.map((val) => val.Year)) - 1; // 1993
+  const maxYear = d3.max(data.map((val) => val.Year)) + 1; // 2016
 
   //initial values to y axis
   const specifier = "%M:%S";
@@ -55,6 +56,33 @@ async function renderData() {
     .append("g")
     .attr("transform", `translate(${margin}, ${margin})`)
     .call(d3.axisLeft(Yaxis).tickFormat(d3.timeFormat(specifier)));
+
+  //Create each dot
+  svg
+    .selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr(
+      "cx",
+      (d) => margin + (d.Year - minYear) * (graphW / (maxYear - minYear))
+    )
+    .attr(
+      "cy",
+      (d) =>
+        margin +
+        (d3.timeParse(specifier)(d.Time).valueOf() - minTime.valueOf()) *
+          (graphH / (maxTime.valueOf() - minTime.valueOf()))
+    )
+    .attr("r", 6)
+    .style("fill", (d) => {
+      if (d.Doping === "") {
+        return "#ffc857";
+      } else {
+        return "#177e89";
+      }
+    })
+    .attr("class", "dot");
 }
 
 renderData();

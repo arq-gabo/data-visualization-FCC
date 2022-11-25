@@ -22,6 +22,11 @@ body {
   -moz-box-shadow: 0px 1px 10px 7px rgba(0, 0, 0, 0.54);
 }
 
+.dot {
+  stroke: black;
+  opacity: 0.7;
+}
+
 .text-footer {
   font-size: 12px;
 }
