@@ -36,7 +36,7 @@ p {
 
 .heat-map {
   background-color: white;
-  width: 800px;
+  width: 900px;
   height: 500px;
   overflow-x: auto;
   overflow-y: hidden;
