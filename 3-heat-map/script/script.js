@@ -46,8 +46,6 @@ const renderData = async () => {
   const graphH = h - margin * 4;
   const heightEachRect = graphH / 12;
 
-  console.log(data.monthlyVariance);
-
   // Initial values legend
   const arrVal = [
     "3.9 or less",
@@ -77,7 +75,6 @@ const renderData = async () => {
   const legendH = 55;
   const widthEachColor = legendGraphW / 7;
   const marginLegend = (legendW - legendGraphW) / 2;
-  console.log(data.monthlyVariance);
 
   //Create main svg
   const svg = d3
@@ -98,7 +95,8 @@ const renderData = async () => {
     .select("#heat-legend")
     .append("svg")
     .attr("width", legendW)
-    .attr("height", legendH);
+    .attr("height", legendH)
+    .attr("id", "legend");
 
   //Create axis x graph
   const xAxis = d3.scaleLinear().domain([minYear, maxYear]).range([0, graphW]);
@@ -106,7 +104,8 @@ const renderData = async () => {
   svg
     .append("g")
     .attr("transform", `translate(${margin * 4 - 1}, ${margin + graphH})`)
-    .call(d3.axisBottom(xAxis).tickFormat(d3.format("")));
+    .call(d3.axisBottom(xAxis).tickFormat(d3.format("")))
+    .attr("id", "x-axis");
 
   //Create axis y graph
   const yAxis = d3
@@ -117,7 +116,8 @@ const renderData = async () => {
   svg
     .append("g")
     .attr("transform", `translate(${margin * 4 - 1}, ${margin})`)
-    .call(d3.axisLeft(yAxis).tickFormat(d3.timeFormat("%B")));
+    .call(d3.axisLeft(yAxis).tickFormat(d3.timeFormat("%B")))
+    .attr("id", "y-axis");
 
   //Create axis x legend
   const xLegendAxis = d3.scalePoint().domain(arrVal).range([0, legendGraphW]);
@@ -159,7 +159,10 @@ const renderData = async () => {
         return arrColor[8];
       }
     })
-    .attr("class", "rect-bar")
+    .attr("class", "cell")
+    .attr("data-month", (d) => d.month - 1)
+    .attr("data-year", (d) => d.year)
+    .attr("data-temp", (d) => baseTemperature + d.variance)
     .on("mouseover", (d) => {
       tooltip.transition().duration(50).style("opacity", 1);
       tooltip
@@ -170,7 +173,8 @@ const renderData = async () => {
         )
         .style("left", `${d3.event.pageX - 55}px`)
         .style("top", `${d3.event.pageY - 65}px`)
-        .attr("class", "tooltip-rect");
+        .attr("class", "tooltip-rect")
+        .attr("data-year", d.year);
     })
     .on("mouseout", (d) => {
       tooltip.transition().duration(500).style("opacity", 0);

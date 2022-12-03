@@ -54,7 +54,7 @@ div#tooltip {
   padding: 5px;
 }
 
-.rect-bar:hover {
+.cell:hover {
   stroke: black;
   stroke-width: 2px;
 }
