@@ -1,3 +1,21 @@
+const getMonth = (val) => {
+  const month = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return month[val - 1];
+};
+
 // Making fetch api data
 const getData = async () => {
   const api_url =
@@ -28,8 +46,9 @@ const renderData = async () => {
   const graphH = h - margin * 4;
   const heightEachRect = graphH / 12;
 
-  // Initial values legend
+  console.log(data.monthlyVariance);
 
+  // Initial values legend
   const arrVal = [
     "3.9 or less",
     "5.0",
@@ -58,13 +77,23 @@ const renderData = async () => {
   const legendH = 55;
   const widthEachColor = legendGraphW / 7;
   const marginLegend = (legendW - legendGraphW) / 2;
+  console.log(data.monthlyVariance);
 
+  //Create main svg
   const svg = d3
     .select("#heat-map")
     .append("svg")
     .attr("width", w)
     .attr("height", h);
 
+  //Create popup hover
+  const tooltip = d3
+    .select("#heat-map")
+    .append("div")
+    .style("opacity", 0)
+    .attr("id", "tooltip");
+
+  //Create legend box
   const legend = d3
     .select("#heat-legend")
     .append("svg")
@@ -129,6 +158,22 @@ const renderData = async () => {
       } else if (varianceTemp >= 11.7) {
         return arrColor[8];
       }
+    })
+    .attr("class", "rect-bar")
+    .on("mouseover", (d) => {
+      tooltip.transition().duration(50).style("opacity", 1);
+      tooltip
+        .html(
+          `${d.year} - ${getMonth(d.month)} </br> Temperature ${parseFloat(
+            baseTemperature + d.variance
+          ).toFixed(2)} °C </br> Variance ${parseFloat(d.variance).toFixed(2)}`
+        )
+        .style("left", `${d3.event.pageX - 55}px`)
+        .style("top", `${d3.event.pageY - 65}px`)
+        .attr("class", "tooltip-rect");
+    })
+    .on("mouseout", (d) => {
+      tooltip.transition().duration(500).style("opacity", 0);
     });
 
   //Create element legend temp scale

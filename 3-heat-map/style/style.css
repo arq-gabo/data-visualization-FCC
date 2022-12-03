@@ -42,6 +42,23 @@ p {
   overflow-y: hidden;
 }
 
+div#tooltip {
+  position: absolute;
+  background-color: #696969;
+  text-align: center;
+  color: white;
+  border-radius: 5px;
+  width: auto;
+  height: 9 0px;
+  font-size: 11px;
+  padding: 5px;
+}
+
+.rect-bar:hover {
+  stroke: black;
+  stroke-width: 2px;
+}
+
 .heat-legend {
   margin-top: 7px;
   background-color: white;
