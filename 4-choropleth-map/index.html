@@ -4,9 +4,33 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Choropleth Map</title>
+    <link rel="stylesheet" href="./style/normalize.css" />
+    <link rel="stylesheet" href="./style/style.css" />
+    <link rel="icon" href="./icon.png" type="image/icon type" />
   </head>
   <body>
-    Hello World
+    <div class="container">
+      <div class="title" id="title">United States Educational Attainment</div>
+      <div class="description" id="description">
+        Percentage of adults age 25 and older with a bachelor's degree or higher
+        (2010-2014)
+      </div>
+      <div class="choropleth-container">
+        <div class="choropleth-legend" id="choropleth-legend"></div>
+        <div class="choropleth-graph" id="choropleth-graph"></div>
+      </div>
+      <p class="text-footer">
+        Made by José Gabriel Guerra for Free Code Camp -
+        <a
+          href="https://github.com/arq-gabo/data-visualization-FCC/tree/main/4-choropleth-map"
+          target="_blank"
+          >Check Code</a
+        >
+      </p>
+    </div>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="./script/script.js"></script>
+    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
   </body>
 </html>
