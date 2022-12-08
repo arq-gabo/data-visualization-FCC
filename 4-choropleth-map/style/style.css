@@ -36,6 +36,8 @@ p {
   background-color: white;
   width: 700px;
   height: 450px;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .choropleth-legend {
