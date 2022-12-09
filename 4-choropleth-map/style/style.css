@@ -40,6 +40,16 @@ p {
   overflow-y: auto;
 }
 
+.counties {
+  fill: none;
+  stroke: grey;
+}
+
+.states {
+  fill: none;
+  stroke: black;
+}
+
 .choropleth-legend {
   background-color: white;
   width: 75px;
