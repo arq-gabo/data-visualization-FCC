@@ -3,30 +3,6 @@ const educationData =
 const countyData =
   "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json";
 
-//Initial Values
-const w = 960;
-const h = 600;
-
-colorScale = [
-  "#e5f4e1",
-  "#c7e9c0",
-  "#a1d89a",
-  "#74c577",
-  "#41ab5d",
-  "#238a44",
-  "#016d2d",
-];
-
-const getColor = (val) => {};
-
-const path = d3.geoPath();
-
-const svg = d3
-  .select("#choropleth-graph")
-  .append("svg")
-  .attr("width", w)
-  .attr("height", h);
-
 let promises = [d3.json(countyData), d3.json(educationData)];
 
 Promise.all(promises)
@@ -34,6 +10,51 @@ Promise.all(promises)
   .catch((e) => console.log(e));
 
 function ready([us, edu]) {
+  // ----------------------- Initial Values ----------------------------------
+  const w = 960;
+  const h = 600;
+
+  const path = d3.geoPath();
+
+  const minPercentBachelor = d3.min(edu.map((val) => val.bachelorsOrHigher));
+  const maxPercentBachelor = d3.max(edu.map((val) => val.bachelorsOrHigher));
+
+  // ----------------------- Create SVG ---------------------------------------
+  const svg = d3
+    .select("#choropleth-graph")
+    .append("svg")
+    .attr("width", w)
+    .attr("height", h);
+
+  const legend = d3
+    .select("#choropleth-legend")
+    .append("svg")
+    .attr("width", 710)
+    .attr("height", 50);
+
+  // --------------------- Create Legend ---------------------------------------
+
+  const linearScale = d3.scaleLinear().domain([0, 100]).range([0, 610]);
+
+  const quantizeScale = d3
+    .scaleQuantize()
+    .domain([0, 100])
+    .range(d3.schemeBlues[9]);
+
+  const myData = d3.range(0, 100);
+
+  legend
+    .selectAll("rect")
+    .data(myData)
+    .join("rect")
+    .attr("x", (d) => linearScale(d))
+    .attr("width", 0)
+    .attr("height", 20)
+    .attr("width", 8)
+    .style("fill", (d) => quantizeScale(d));
+
+  // ----------------------- Construction map ----------------------------------
+
   svg
     .append("g")
     .selectAll("path")
