@@ -34,23 +34,25 @@ p {
   height: 450px;
   overflow-x: auto;
   overflow-y: auto;
-  padding-left: 10px;
 }
 
 .choropleth-legend {
   background-color: white;
-  width: 710px;
-  height: 50px;
+  width: 700px;
+  height: 45px;
 }
 
 .counties {
   fill: none;
-  stroke: grey;
+  stroke: white;
+  stroke-width: 0.25px;
 }
 
 .states {
   fill: none;
-  stroke: black;
+  stroke: #8c2d04;
+  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .text-footer {
