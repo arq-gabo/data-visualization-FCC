@@ -41,6 +41,13 @@ function ready([us, edu]) {
     .attr("width", wLeg)
     .attr("height", hLeg);
 
+  // --------------------- Create Tooltip ---------------------------------------
+  const tooltip = d3
+    .select("#choropleth-graph")
+    .append("div")
+    .style("visibility", "hidden")
+    .attr("id", "tooltip");
+
   // ----------------------- Construction Legend --------------------------------------
 
   const percentageScale = d3
@@ -56,7 +63,7 @@ function ready([us, edu]) {
   legend
     .append("g")
     .call(d3.axisBottom(percentageScale))
-    .attr("transform", "translate(50, 20)");
+    .attr("transform", "translate(100, 20)");
 
   const myData = d3.range(0, maxPercentBachelor);
 
@@ -69,7 +76,7 @@ function ready([us, edu]) {
     .attr("width", maxPercentBachelor / 10 + 1)
     .attr("height", 15)
     .attr("fill", (d) => colorScale(d))
-    .attr("transform", "translate(50, 0)");
+    .attr("transform", "translate(100, 0)");
 
   legend.select("text").text("Percentage %");
 
@@ -85,7 +92,19 @@ function ready([us, edu]) {
     .attr("class", "counties")
     .style("fill", (d) =>
       colorScale(edu.find((val) => val.fips === d.id).bachelorsOrHigher)
-    );
+    )
+    .on("mouseover", (d) => {
+      let dataEdu = edu.find((val) => val.fips === d.id);
+      tooltip.style("visibility", "visible");
+      tooltip.html(
+        `<p>${dataEdu.area_name} ${dataEdu.state}</p> <p> ${dataEdu.bachelorsOrHigher}% </p>`
+      );
+      tooltip.style("top", `${d3.event.pageY - 50}px`);
+      tooltip.style("left", `${d3.event.pageX + 10}px`);
+    })
+    .on("mouseout", (d) => {
+      tooltip.style("visibility", "hidden");
+    });
 
   svg
     .append("g")
