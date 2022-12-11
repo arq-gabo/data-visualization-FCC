@@ -62,7 +62,7 @@ function ready([us, edu]) {
 
   legend
     .append("g")
-    .call(d3.axisBottom(percentageScale))
+    .call(d3.axisBottom(percentageScale).tickFormat((d) => `${d}%`))
     .attr("transform", "translate(100, 20)");
 
   const myData = d3.range(0, maxPercentBachelor);
@@ -78,7 +78,7 @@ function ready([us, edu]) {
     .attr("fill", (d) => colorScale(d))
     .attr("transform", "translate(100, 0)");
 
-  legend.select("text").text("Percentage %");
+  legend.select("text").text("Percentage");
 
   // ----------------------- Construction map ----------------------------------
 
