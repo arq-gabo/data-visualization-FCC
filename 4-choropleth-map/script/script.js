@@ -15,7 +15,6 @@ Promise.all(promises)
 
 function ready([us, edu]) {
   // ----------------------- Initial Values ----------------------------------
-
   const w = 950;
   const h = 600;
 
@@ -39,14 +38,14 @@ function ready([us, edu]) {
     .select("#choropleth-legend")
     .append("svg")
     .attr("width", wLeg)
-    .attr("height", hLeg);
+    .attr("height", hLeg)
+    .attr("id", "legend");
 
   // --------------------- Create Tooltip ---------------------------------------
   const tooltip = d3
     .select("#choropleth-graph")
     .append("div")
-    .style("visibility", "hidden")
-    .attr("id", "tooltip");
+    .style("visibility", "hidden");
 
   // ----------------------- Construction Legend --------------------------------------
 
@@ -89,18 +88,26 @@ function ready([us, edu]) {
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("class", "counties")
     .style("fill", (d) =>
       colorScale(edu.find((val) => val.fips === d.id).bachelorsOrHigher)
+    )
+    .attr("class", "county")
+    .attr("data-fips", (d) => edu.find((val) => val.fips === d.id).fips)
+    .attr(
+      "data-education",
+      (d) => edu.find((val) => val.fips === d.id).bachelorsOrHigher
     )
     .on("mouseover", (d) => {
       let dataEdu = edu.find((val) => val.fips === d.id);
       tooltip.style("visibility", "visible");
-      tooltip.html(
-        `<p>${dataEdu.area_name} ${dataEdu.state}</p> <p> ${dataEdu.bachelorsOrHigher}% </p>`
-      );
-      tooltip.style("top", `${d3.event.pageY - 50}px`);
-      tooltip.style("left", `${d3.event.pageX + 10}px`);
+      tooltip
+        .html(
+          `<p>${dataEdu.area_name} ${dataEdu.state}</p> <p> ${dataEdu.bachelorsOrHigher}% </p>`
+        )
+        .style("top", `${d3.event.pageY - 50}px`)
+        .style("left", `${d3.event.pageX + 10}px`)
+        .attr("id", "tooltip")
+        .attr("data-education", dataEdu.bachelorsOrHigher);
     })
     .on("mouseout", (d) => {
       tooltip.style("visibility", "hidden");

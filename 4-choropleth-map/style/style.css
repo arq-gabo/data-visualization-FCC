@@ -42,13 +42,13 @@ p {
   height: 45px;
 }
 
-.counties {
+.county {
   fill: none;
   stroke: white;
   stroke-width: 0.25px;
 }
 
-.counties:hover {
+.county:hover {
   stroke: rgba(140, 45, 4, 1);
   stroke-width: 2px;
 }
