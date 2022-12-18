@@ -1,32 +1,52 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as d3 from "d3";
 import axios from "axios";
 
 const TreeMap = ({ objProps }) => {
-  //   const getData = async () => {
-  //     try {
-  //       const response = await axios.get(objProps.apiUrl);
-  //       console.log(response.data);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   getData();}
-
   const ref = useRef();
 
+  const width = 1200;
+  const height = 640;
+
   useEffect(() => {
-    const treeMap = d3.select(ref.current);
-    treeMap.append("circle").attr("cx", 150).attr("cy", 140).attr("r", 50);
-  }, []);
+    const svg = d3.select(ref.current);
+
+    axios
+      .get(objProps.apiUrl)
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data);
+
+        svg.attr("width", width).attr("height", height);
+
+        const root = d3
+          .hierarchy(data)
+          .sum((d) => d.value)
+          .sort((a, b) => b.value - a.value);
+
+        const treeMapRoot = d3.treemap().size([width, height]).padding(1)(root);
+
+        const nodes = svg
+          .selectAll("g")
+          .data(treeMapRoot.leaves())
+          .join("g")
+          .attr("transform", (d) => `translate(${d.x0}, ${d.y0})`);
+
+        const fader = (color) => d3.interpolateRgb(color, "#fff")(0.1);
+
+        const colorScale = d3.scaleOrdinal(d3.schemeCategory10.map(fader));
+
+        nodes
+          .append("rect")
+          .attr("width", (d) => d.x1 - d.x0)
+          .attr("height", (d) => d.y1 - d.y0)
+          .attr("fill", (d) => colorScale(d.data.category));
+      });
+  }, [objProps.apiUrl]);
 
   return (
-    <div className="w-[800px] h-[500px] bg-white rounded-lg flex flex-col">
-      <h2 className="text-2xl font-bold text-center">{objProps.title}</h2>
-      <p className="text-center">{objProps.subTitle}</p>
-      <div className="grow">
-        <svg ref={ref} className="border border-red-600 w-full h-full"></svg>
-      </div>
+    <div>
+      <svg ref={ref} />
     </div>
   );
 };

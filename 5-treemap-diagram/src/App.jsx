@@ -5,7 +5,9 @@ import "./App.css";
 
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-import TreeMap from "./components/TreeMap";
+import MoviesPage from "./pages/MoviesPage";
+import VideoGamePage from "./pages/VideoGamePage";
+import KickStarterPage from "./pages/KickStarterPage";
 
 function App() {
   const objVideoGame = {
@@ -34,11 +36,11 @@ function App() {
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route index element={<TreeMap objProps={objVideoGame} />} />
-          <Route path="movies" element={<TreeMap objProps={objMovies} />} />
+          <Route index element={<VideoGamePage objProps={objVideoGame} />} />
+          <Route path="movies" element={<MoviesPage objProps={objMovies} />} />
           <Route
             path="kickstarter"
-            element={<TreeMap objProps={objKickstarter} />}
+            element={<KickStarterPage objProps={objKickstarter} />}
           />
         </Routes>
       </BrowserRouter>
