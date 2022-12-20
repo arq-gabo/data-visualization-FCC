@@ -1,10 +1,11 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import "./App.css";
-
+// Components
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+
+// Pages
 import MoviesPage from "./pages/MoviesPage";
 import VideoGamePage from "./pages/VideoGamePage";
 import KickStarterPage from "./pages/KickStarterPage";

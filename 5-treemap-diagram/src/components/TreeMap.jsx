@@ -6,29 +6,37 @@ const TreeMap = ({ objProps }) => {
   const svgRef = useRef(null);
   const legendRef = useRef(null);
 
-  const width = 1000;
-  const height = 1000;
+  // --------------- Initial Values ------------------------------
+  const widthMap = 1000;
+  const heightMap = 1000;
+  const widthLegend = 140;
+  const heightLegend = 420;
   const fontSize = 12;
+  const spaceLegend = 1.8;
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
+    svg.selectAll("g").remove();
     const legendContainer = d3.select(legendRef.current);
+    legendContainer.selectAll("g").remove();
 
     // --------------------- Get data from api --------------------------------
     axios
       .get(objProps.apiUrl)
       .then((res) => res.data)
       .then((data) => {
-        console.log(data);
+        // ------------------------- Tree map graph -------------------------------
 
-        svg.attr("width", width).attr("height", height);
+        svg.attr("width", widthMap).attr("height", heightMap);
 
         const root = d3
           .hierarchy(data)
           .sum((d) => d.value)
           .sort((a, b) => b.value - a.value);
 
-        const treeMapRoot = d3.treemap().size([width, height]).padding(1)(root);
+        const treeMapRoot = d3.treemap().size([widthMap, heightMap]).padding(1)(
+          root
+        );
 
         const nodes = svg
           .selectAll("g")
@@ -54,7 +62,7 @@ const TreeMap = ({ objProps }) => {
           .attr("y", fontSize + 4)
           .call(wrapText);
 
-        // ------------------------- Function for wrap text -------------------------------------
+        // ------------------------- Function for wrap text in tree map graph-------------------------------------
 
         function wrapText(selection) {
           selection.each(function () {
@@ -101,7 +109,7 @@ const TreeMap = ({ objProps }) => {
           (category, index, self) => self.indexOf(category) === index
         );
 
-        legendContainer.attr("width", width).attr("height", height / 4);
+        legendContainer.attr("width", widthLegend).attr("height", heightLegend);
 
         const legend = legendContainer
           .selectAll("g")
@@ -110,26 +118,35 @@ const TreeMap = ({ objProps }) => {
 
         legend
           .append("rect")
-          .attr("width", fontSize * 2)
+          .attr("width", fontSize)
           .attr("height", fontSize)
-          .attr("y", fontSize)
-          .attr("x", (_, i) => fontSize * 4 * i)
+          .attr("x", fontSize)
+          .attr("y", (_, i) => fontSize * spaceLegend * i)
           .attr("fill", (d) => colorScale(d));
 
         legend
           .append("text")
           .attr("transform", `translate(0, ${fontSize})`)
-          .attr("y", fontSize * 2)
-          .attr("x", (_, i) => fontSize * 4 * i)
+          .attr("x", fontSize * 3)
+          .attr("y", (_, i) => fontSize * spaceLegend * i)
           .style("font-size", fontSize)
           .text((d) => d);
       });
   }, [objProps.apiUrl]);
 
   return (
-    <div>
-      <svg ref={svgRef} />
-      <svg ref={legendRef} />
+    <div className=" bg-white flex flex-col">
+      <h2 className="text-2xl font-bold text-center">{objProps.title}</h2>
+      <p className="text-center">{objProps.subTitle}</p>
+      <div className="flex w-[900px] h-[450px] ">
+        <div>
+          <p className="text-center mb-1">Legend</p>
+          <svg ref={legendRef} />
+        </div>
+        <div className="overflow-scroll">
+          <svg ref={svgRef} />
+        </div>
+      </div>
     </div>
   );
 };
