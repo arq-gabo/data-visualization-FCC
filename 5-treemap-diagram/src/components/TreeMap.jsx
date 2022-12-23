@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as d3 from "d3";
 import axios from "axios";
 
 const TreeMap = ({ objProps }) => {
   const svgRef = useRef(null);
   const legendRef = useRef(null);
+  const tooltipRef = useRef(null);
 
   // --------------- Initial Values ------------------------------
   const widthMap = 1000;
@@ -15,10 +16,12 @@ const TreeMap = ({ objProps }) => {
   const spaceLegend = 1.8;
 
   useEffect(() => {
+    // Create svg for tree Map
     const svg = d3.select(svgRef.current);
     svg.selectAll("g").remove();
     const legendContainer = d3.select(legendRef.current);
     legendContainer.selectAll("g").remove();
+    const tooltip = d3.select(tooltipRef.current);
 
     // --------------------- Get data from api --------------------------------
     axios
@@ -28,6 +31,9 @@ const TreeMap = ({ objProps }) => {
         // ------------------------- Tree map graph -------------------------------
 
         svg.attr("width", widthMap).attr("height", heightMap);
+        tooltip
+          .style("background-color", "rgb(169, 169, 169)")
+          .style("opacity", 0);
 
         const root = d3
           .hierarchy(data)
@@ -52,7 +58,21 @@ const TreeMap = ({ objProps }) => {
           .append("rect")
           .attr("width", (d) => d.x1 - d.x0)
           .attr("height", (d) => d.y1 - d.y0)
-          .attr("fill", (d) => colorScale(d.data.category));
+          .attr("fill", (d) => colorScale(d.data.category))
+          .on("mousemove", (event, d) => {
+            tooltip
+              .style("opacity", 1)
+              .html(
+                `name: <b>${d.data.name}</b> </br> category: <b>${
+                  d.data.category
+                }</b> </br> value: <b>${new Intl.NumberFormat("de-DE").format(
+                  d.data.value
+                )} USD </b>`
+              )
+              .style("left", `${event.offsetX + 15}px`)
+              .style("top", `${event.offsetY - 30}px`);
+          })
+          .on("mouseout", () => tooltip.style("opacity", 0));
 
         nodes
           .append("text")
@@ -143,8 +163,12 @@ const TreeMap = ({ objProps }) => {
           <p className="text-center mb-1">Legend</p>
           <svg ref={legendRef} />
         </div>
-        <div className="overflow-scroll">
+        <div className="overflow-scroll relative">
           <svg ref={svgRef} />
+          <div
+            ref={tooltipRef}
+            className="absolute text-center text-xs px-3 rounded-lg"
+          ></div>
         </div>
       </div>
     </div>
