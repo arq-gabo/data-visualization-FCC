@@ -16,7 +16,7 @@ const TreeMap = ({ objProps }) => {
   const spaceLegend = 1.8;
 
   useEffect(() => {
-    // Create svg for tree Map
+    // --------------------- Create svg for tree Map -----------------------------
     const svg = d3.select(svgRef.current);
     svg.selectAll("g").remove();
     const legendContainer = d3.select(legendRef.current);
@@ -31,9 +31,11 @@ const TreeMap = ({ objProps }) => {
         // ------------------------- Tree map graph -------------------------------
 
         svg.attr("width", widthMap).attr("height", heightMap);
+
         tooltip
           .style("background-color", "rgb(169, 169, 169)")
-          .style("opacity", 0);
+          .style("opacity", 0)
+          .attr("id", "tooltip");
 
         const root = d3
           .hierarchy(data)
@@ -59,6 +61,10 @@ const TreeMap = ({ objProps }) => {
           .attr("width", (d) => d.x1 - d.x0)
           .attr("height", (d) => d.y1 - d.y0)
           .attr("fill", (d) => colorScale(d.data.category))
+          .attr("class", "tile")
+          .attr("data-name", (d) => d.data.name)
+          .attr("data-category", (d) => d.data.category)
+          .attr("data-value", (d) => d.data.value)
           .on("mousemove", (event, d) => {
             tooltip
               .style("opacity", 1)
@@ -70,7 +76,8 @@ const TreeMap = ({ objProps }) => {
                 )} USD </b>`
               )
               .style("left", `${event.offsetX + 15}px`)
-              .style("top", `${event.offsetY - 30}px`);
+              .style("top", `${event.offsetY - 30}px`)
+              .attr("data-value", d.data.value);
           })
           .on("mouseout", () => tooltip.style("opacity", 0));
 
@@ -134,7 +141,8 @@ const TreeMap = ({ objProps }) => {
         const legend = legendContainer
           .selectAll("g")
           .data(categories)
-          .join("g");
+          .join("g")
+          .attr("id", "legend");
 
         legend
           .append("rect")
@@ -142,7 +150,8 @@ const TreeMap = ({ objProps }) => {
           .attr("height", fontSize)
           .attr("x", fontSize)
           .attr("y", (_, i) => fontSize * spaceLegend * i)
-          .attr("fill", (d) => colorScale(d));
+          .attr("fill", (d) => colorScale(d))
+          .attr("class", "legend-item");
 
         legend
           .append("text")
@@ -156,8 +165,12 @@ const TreeMap = ({ objProps }) => {
 
   return (
     <div className=" bg-white flex flex-col">
-      <h2 className="text-2xl font-bold text-center">{objProps.title}</h2>
-      <p className="text-center">{objProps.subTitle}</p>
+      <h2 className="text-2xl font-bold text-center" id="title">
+        {objProps.title}
+      </h2>
+      <p className="text-center" id="description">
+        {objProps.subTitle}
+      </p>
       <div className="flex w-[900px] h-[450px] ">
         <div>
           <p className="text-center mb-1">Legend</p>
